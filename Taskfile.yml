@@ -4,12 +4,10 @@ version: "3"
 
 env:
   CGO_ENABLED: 0
+  GOOS: linux
 
 tasks:
   build:
-    cmd: go build -a -gcflags=all="-l -B" -ldflags="-w -s" -o improv_amd64
-  build:arm:
     env:
-      GOOS: linux
-      GOARCH: arm
-    cmd: go build -a -gcflags=all="-l -B" -ldflags="-w -s" -o improv_arm .
+      GOARCH: amd64
+    cmd: go build -a -gcflags=all="-l -B" -ldflags="-w -s" -o improv-${GOOS}-${GOARCH}
