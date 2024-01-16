@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+var (
+	version = "main"
+	commit  = "?"
+	date    = ""
+)
+
 type Options struct {
 	name            string
 	identifyCommand string
@@ -47,6 +53,9 @@ func parseArguments(args []string) (*Options, error) {
 	flag.BoolVar(&debug, "d", false, "")
 
 	flag.Usage = func() {
+		println("improv - A tool for advertising wifi settings over bluetooth")
+		println(version + " (" + commit + ") " + date)
+		println()
 		println("Usage: improv [options]")
 		println()
 		println("Options:")

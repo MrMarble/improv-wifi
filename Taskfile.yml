@@ -10,7 +10,14 @@ tasks:
   build:
     env:
       GOARCH: amd64
-    cmd: go build -a -gcflags=all="-l -B" -ldflags="-w -s" -o improv-${GOOS}-${GOARCH}
+    vars:
+      VERSION:
+        sh: git describe --tags --always
+      COMMIT:
+        sh: git rev-parse --short HEAD
+      DATE:
+        sh: git log -1 --format=%cd --date=format:'%Y-%m-%d'
+    cmd: go build -a -gcflags=all="-l -B" -ldflags="-w -s -X main.version={{.VERSION}} -X main.commit={{.COMMIT}} -X main.date={{.DATE}}" -o improv-${GOOS}-${GOARCH} .
 
   release:
     vars:
