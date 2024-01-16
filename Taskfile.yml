@@ -11,3 +11,11 @@ tasks:
     env:
       GOARCH: amd64
     cmd: go build -a -gcflags=all="-l -B" -ldflags="-w -s" -o improv-${GOOS}-${GOARCH}
+
+  release:
+    vars:
+      NEXT_VERSION:
+        sh: svu n
+    cmds:
+      - git tag {{.NEXT_VERSION}}
+      - git push origin --tags
