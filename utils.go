@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
-	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/mrmarble/exec"
 )
 
 // sleepWithContext sleeps for the specified duration or until the context is done

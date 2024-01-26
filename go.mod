@@ -2,7 +2,10 @@ module github.com/mrmarble/improv
 
 go 1.21.1
 
-require tinygo.org/x/bluetooth v0.8.0
+require (
+	github.com/mrmarble/exec v0.2.0
+	tinygo.org/x/bluetooth v0.8.0
+)
 
 require (
 	github.com/fatih/structs v1.1.0 // indirect
