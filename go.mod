@@ -3,7 +3,7 @@ module github.com/mrmarble/improv
 go 1.21.6
 
 require (
-	github.com/mrmarble/exec v0.2.1
+	github.com/mrmarble/exec v0.2.2
 	tinygo.org/x/bluetooth v0.8.0
 )
 
