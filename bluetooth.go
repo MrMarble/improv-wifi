@@ -150,8 +150,10 @@ func configureWIFI(args []string, errorHandler bluetooth.Characteristic, statusH
 		}
 		if output != "" {
 			infoln("Wifi command output:", output)
-			if strings.HasPrefix(output, "http") {
-				rpcResultHandler.Write(protocol.BuildImprovResponse(improv.COMMAND_WIFI_SETTINGS, []string{output}))
+			lines := strings.Split(output, "\n")
+			lastLine := lines[len(lines)-1]
+			if strings.HasPrefix(lastLine, "http") {
+				rpcResultHandler.Write(protocol.BuildImprovResponse(improv.COMMAND_WIFI_SETTINGS, []string{lastLine}))
 			}
 		}
 	} else {
