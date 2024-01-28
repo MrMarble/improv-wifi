@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"strings"
 
 	"github.com/mrmarble/improv/improv"
 	"tinygo.org/x/bluetooth"
@@ -150,10 +149,9 @@ func configureWIFI(args []string, errorHandler bluetooth.Characteristic, statusH
 		}
 		if output != "" {
 			infoln("Wifi command output:", output)
-			lines := strings.Split(output, "\n")
-			lastLine := lines[len(lines)-1]
-			if strings.HasPrefix(lastLine, "http") {
-				rpcResultHandler.Write(protocol.BuildImprovResponse(improv.COMMAND_WIFI_SETTINGS, []string{lastLine}))
+			url := findUrl(output)
+			if url != "" {
+				rpcResultHandler.Write(protocol.BuildImprovResponse(improv.COMMAND_WIFI_SETTINGS, []string{url}))
 			}
 		}
 	} else {

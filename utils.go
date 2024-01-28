@@ -48,3 +48,12 @@ func debugln(args ...string) {
 func errorln(args ...string) {
 	println("[ERROR]", strings.Join(args, " "))
 }
+
+func findUrl(str string) string {
+	for _, line := range strings.Split(str, "\n") {
+		if strings.HasPrefix(line, "http") {
+			return strings.TrimSpace(line)
+		}
+	}
+	return ""
+}
