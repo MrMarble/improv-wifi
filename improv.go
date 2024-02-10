@@ -17,40 +17,34 @@ var (
 
 )
 
-type (
-	improvState   byte
-	improvCommand byte
-	improvError   byte
-)
-
 // State constants
 const (
-	STATE_STOPPED                improvState = iota
-	STATE_AWAITING_AUTHORIZATION             // Awaiting authorization via physical interaction.
-	STATE_AUTHORIZED                         // Ready to accept credentials.
-	STATE_PROVISIONING                       // Credentials received, attempt to connect.
-	STATE_PROVISIONED                        // Connection successful.
+	STATE_STOPPED                byte = iota
+	STATE_AWAITING_AUTHORIZATION      // Awaiting authorization via physical interaction.
+	STATE_AUTHORIZED                  // Ready to accept credentials.
+	STATE_PROVISIONING                // Credentials received, attempt to connect.
+	STATE_PROVISIONED                 // Connection successful.
 
 )
 
 // Command constants
 const (
-	COMMAND_UNKNOWN improvCommand = iota
+	COMMAND_UNKNOWN byte = iota
 	COMMAND_WIFI_SETTINGS
 	COMMAND_IDENTIFY
 )
 
 // Error constants
 const (
-	ERROR_NONE              improvError = iota // This shows there is no current error state.
-	ERROR_INVALID_RPC                          // RPC packet was malformed/invalid.
-	ERROR_UNKNOWN_RPC                          // The command sent is unknown.
-	ERROR_UNABLE_TO_CONNECT                    // The credentials have been received and an attempt to connect to the network has failed.
-	ERROR_NOT_AUTHORIZED                       // Credentials were sent via RPC but the Improv service is not authorized.
+	ERROR_NONE              byte = iota // This shows there is no current error state.
+	ERROR_INVALID_RPC                   // RPC packet was malformed/invalid.
+	ERROR_UNKNOWN_RPC                   // The command sent is unknown.
+	ERROR_UNABLE_TO_CONNECT             // The credentials have been received and an attempt to connect to the network has failed.
+	ERROR_NOT_AUTHORIZED                // Credentials were sent via RPC but the Improv service is not authorized.
 	ERROR_UNKNOWN           = 0xFF
 )
 
-func (s improvCommand) String() string {
+func CmdToString(s byte) string {
 	switch s {
 	case COMMAND_UNKNOWN:
 		return "COMMAND_UNKNOWN"
@@ -63,8 +57,8 @@ func (s improvCommand) String() string {
 }
 
 // ParseImprovData parses the data received from the Improv service and returns the command and arguments.
-func ParseImprovData(data []byte) (improvCommand, []string) {
-	cmd := improvCommand(data[0])
+func ParseImprovData(data []byte) (byte, []string) {
+	cmd := data[0]
 
 	switch cmd {
 	case COMMAND_WIFI_SETTINGS:
@@ -88,8 +82,8 @@ func ParseImprovData(data []byte) (improvCommand, []string) {
 }
 
 // BuildImprovResponse builds the Improv response packet.
-func BuildImprovResponse(cmd improvCommand, args []string) []byte {
-	output := []byte{0x00, byte(cmd)}
+func BuildImprovResponse(cmd byte, args []string) []byte {
+	output := []byte{0x00, (cmd)}
 	length := 0
 	for _, arg := range args {
 		len := len(arg)

@@ -9,7 +9,7 @@ import (
 func TestParseCommand(t *testing.T) {
 	t.Parallel()
 	t.Run("WifiSettings", func(t *testing.T) {
-		d := []byte{byte(improv.COMMAND_WIFI_SETTINGS), 0x00}
+		d := []byte{(improv.COMMAND_WIFI_SETTINGS), 0x00}
 		ssid := "mySsid"
 		pass := "secretPass"
 		d = append(d, byte(len(ssid)))
@@ -34,7 +34,7 @@ func TestParseCommand(t *testing.T) {
 	})
 
 	t.Run("Identify", func(t *testing.T) {
-		d := []byte{byte(improv.COMMAND_IDENTIFY)}
+		d := []byte{(improv.COMMAND_IDENTIFY)}
 		cmd, args := improv.ParseImprovData(d)
 		if cmd != improv.COMMAND_IDENTIFY {
 			t.Errorf("Expected COMMAND_IDENTIFY, got %v", cmd)
@@ -49,7 +49,7 @@ func TestBuildResponse(t *testing.T) {
 	t.Parallel()
 	t.Run("WifiSettings", func(t *testing.T) {
 		url := "http://0.0.0.0:8080/setup"
-		expected := []byte{0x00, byte(improv.COMMAND_WIFI_SETTINGS), byte(len(url))}
+		expected := []byte{0x00, (improv.COMMAND_WIFI_SETTINGS), byte(len(url))}
 		expected = append(expected, []byte(url)...)
 		expected[0] = byte(len(expected) - 2)
 

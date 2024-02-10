@@ -78,13 +78,13 @@ func setCapabilities(adapter *bluetooth.Adapter, opts *Options, cancel context.C
 				Handle: &statusHandler,
 				UUID:   bluetooth.NewUUID(improv.STATUS_UUID),
 				Flags:  bluetooth.CharacteristicReadPermission | bluetooth.CharacteristicWritePermission | bluetooth.CharacteristicNotifyPermission,
-				Value:  []byte{byte(improv.STATE_AUTHORIZED)},
+				Value:  []byte{(improv.STATE_AUTHORIZED)},
 			},
 			{
 				Handle: &errorHandler,
 				UUID:   bluetooth.NewUUID(improv.ERROR_UUID),
 				Flags:  bluetooth.CharacteristicReadPermission | bluetooth.CharacteristicWritePermission | bluetooth.CharacteristicNotifyPermission,
-				Value:  []byte{byte(improv.ERROR_NONE)},
+				Value:  []byte{(improv.ERROR_NONE)},
 			},
 			{
 				UUID:  bluetooth.NewUUID(improv.RPC_COMMAND_UUID),
@@ -97,8 +97,8 @@ func setCapabilities(adapter *bluetooth.Adapter, opts *Options, cancel context.C
 					case improv.COMMAND_IDENTIFY:
 						identifyDevice(opts, errorHandler)
 					default:
-						infoln("Unknown command:", cmd.String())
-						errorHandler.Write([]byte{byte(improv.ERROR_UNKNOWN_RPC)})
+						infoln("Unknown command:", improv.CmdToString(cmd))
+						errorHandler.Write([]byte{(improv.ERROR_UNKNOWN_RPC)})
 					}
 				},
 			},
@@ -121,7 +121,7 @@ func identifyDevice(opts *Options, errorHandler bluetooth.Characteristic) {
 	output, err := executeCommand(opts.identifyCommand)
 	if err != nil {
 		errorln("Running identify command:", err.Error())
-		errorHandler.Write([]byte{byte(improv.ERROR_UNKNOWN)})
+		errorHandler.Write([]byte{(improv.ERROR_UNKNOWN)})
 	}
 	if output != "" {
 		debugln("Identify command output:", output)
@@ -131,18 +131,18 @@ func identifyDevice(opts *Options, errorHandler bluetooth.Characteristic) {
 func configureWIFI(args []string, errorHandler bluetooth.Characteristic, statusHandler bluetooth.Characteristic, opts *Options, rpcResultHandler bluetooth.Characteristic, cancel context.CancelFunc) {
 	if args == nil || len(args) != 2 {
 		errorln("Invalid wifi settings command")
-		errorHandler.Write([]byte{byte(improv.ERROR_INVALID_RPC)})
+		errorHandler.Write([]byte{(improv.ERROR_INVALID_RPC)})
 	}
 	infoln("Provisioning wifi")
-	statusHandler.Write([]byte{byte(improv.STATE_PROVISIONING)})
+	statusHandler.Write([]byte{(improv.STATE_PROVISIONING)})
 	if opts.wifiCommand != "" {
 		debugln("Running wifi command")
 		output, err := executeCommand(opts.wifiCommand, args...)
 		if err != nil {
 			errorln("Got error", quote(err.Error()), "running wifi command, command output:", output)
-			errorHandler.Write([]byte{byte(improv.ERROR_UNABLE_TO_CONNECT)})
-			statusHandler.Write([]byte{byte(improv.STATE_AUTHORIZED)})
-			errorHandler.Write([]byte{byte(improv.ERROR_NONE)})
+			errorHandler.Write([]byte{(improv.ERROR_UNABLE_TO_CONNECT)})
+			statusHandler.Write([]byte{(improv.STATE_AUTHORIZED)})
+			errorHandler.Write([]byte{(improv.ERROR_NONE)})
 			return
 		}
 		if output != "" {
@@ -157,22 +157,22 @@ func configureWIFI(args []string, errorHandler bluetooth.Characteristic, statusH
 		output, err := executeCommand("nmcli", "device", "wifi", "rescan")
 		if err != nil {
 			errorln("Got error", quote(err.Error()), "running nmcli, command output:", output)
-			errorHandler.Write([]byte{byte(improv.ERROR_UNABLE_TO_CONNECT)})
-			statusHandler.Write([]byte{byte(improv.STATE_AUTHORIZED)})
-			errorHandler.Write([]byte{byte(improv.ERROR_NONE)})
+			errorHandler.Write([]byte{(improv.ERROR_UNABLE_TO_CONNECT)})
+			statusHandler.Write([]byte{(improv.STATE_AUTHORIZED)})
+			errorHandler.Write([]byte{(improv.ERROR_NONE)})
 			return
 		}
 		executeCommand("nmcli", "device", "wifi", "delete", args[0])
 		output, err = executeCommand("nmcli", "device", "wifi", "connect", quote(args[0]), "password", quote(args[1]))
 		if err != nil {
 			errorln("Got error", quote(err.Error()), "running nmcli, command output:", output)
-			errorHandler.Write([]byte{byte(improv.ERROR_UNABLE_TO_CONNECT)})
-			statusHandler.Write([]byte{byte(improv.STATE_AUTHORIZED)})
-			errorHandler.Write([]byte{byte(improv.ERROR_NONE)})
+			errorHandler.Write([]byte{(improv.ERROR_UNABLE_TO_CONNECT)})
+			statusHandler.Write([]byte{(improv.STATE_AUTHORIZED)})
+			errorHandler.Write([]byte{(improv.ERROR_NONE)})
 			return
 		}
 	}
-	statusHandler.Write([]byte{byte(improv.STATE_PROVISIONED)})
+	statusHandler.Write([]byte{(improv.STATE_PROVISIONED)})
 	infoln("Wifi provisioned")
 	cancel()
 }
