@@ -1,4 +1,4 @@
-module github.com/mrmarble/improv
+module github.com/mrmarble/improv-wifi
 
 go 1.21.6
 

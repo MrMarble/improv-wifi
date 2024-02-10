@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/mrmarble/improv/improv"
+	"github.com/mrmarble/improv-wifi/improv"
 	"tinygo.org/x/bluetooth"
 )
 
