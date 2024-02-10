@@ -63,8 +63,6 @@ func configureAdvertisement(adapter *bluetooth.Adapter, opts *Options) (*bluetoo
 }
 
 func setCapabilities(adapter *bluetooth.Adapter, opts *Options, cancel context.CancelFunc) error {
-	protocol := improv.New()
-
 	var statusHandler bluetooth.Characteristic
 	var rpcResultHandler bluetooth.Characteristic
 	var errorHandler bluetooth.Characteristic
@@ -92,10 +90,10 @@ func setCapabilities(adapter *bluetooth.Adapter, opts *Options, cancel context.C
 				UUID:  bluetooth.NewUUID(improv.RPC_COMMAND_UUID),
 				Flags: bluetooth.CharacteristicReadPermission | bluetooth.CharacteristicWritePermission | bluetooth.CharacteristicWriteWithoutResponsePermission,
 				WriteEvent: func(client bluetooth.Connection, offset int, value []byte) {
-					cmd, args := protocol.ParseImprovData(value)
+					cmd, args := improv.ParseImprovData(value)
 					switch cmd {
 					case improv.COMMAND_WIFI_SETTINGS:
-						configureWIFI(args, errorHandler, statusHandler, opts, rpcResultHandler, protocol, cancel)
+						configureWIFI(args, errorHandler, statusHandler, opts, rpcResultHandler, cancel)
 					case improv.COMMAND_IDENTIFY:
 						identifyDevice(opts, errorHandler)
 					default:
@@ -130,7 +128,7 @@ func identifyDevice(opts *Options, errorHandler bluetooth.Characteristic) {
 	}
 }
 
-func configureWIFI(args []string, errorHandler bluetooth.Characteristic, statusHandler bluetooth.Characteristic, opts *Options, rpcResultHandler bluetooth.Characteristic, protocol *improv.Improv, cancel context.CancelFunc) {
+func configureWIFI(args []string, errorHandler bluetooth.Characteristic, statusHandler bluetooth.Characteristic, opts *Options, rpcResultHandler bluetooth.Characteristic, cancel context.CancelFunc) {
 	if args == nil || len(args) != 2 {
 		errorln("Invalid wifi settings command")
 		errorHandler.Write([]byte{byte(improv.ERROR_INVALID_RPC)})
@@ -151,7 +149,7 @@ func configureWIFI(args []string, errorHandler bluetooth.Characteristic, statusH
 			infoln("Wifi command output:", output)
 			url := findUrl(output)
 			if url != "" {
-				rpcResultHandler.Write(protocol.BuildImprovResponse(improv.COMMAND_WIFI_SETTINGS, []string{url}))
+				rpcResultHandler.Write(improv.BuildImprovResponse(improv.COMMAND_WIFI_SETTINGS, []string{url}))
 			}
 		}
 	} else {

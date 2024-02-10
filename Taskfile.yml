@@ -19,6 +19,9 @@ tasks:
         sh: git log -1 --format=%cd --date=format:'%Y-%m-%d'
     cmd: go build -a -gcflags=all="-l -B" -ldflags="-w -s -X main.version={{.VERSION}} -X main.commit={{.COMMIT}} -X main.date={{.DATE}}" -o improv-${GOOS}-${GOARCH} ./cmd
 
+  test:
+    cmd: go test ./...
+    
   release:
     vars:
       NEXT_VERSION:
