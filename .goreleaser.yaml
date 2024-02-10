@@ -49,6 +49,11 @@ builds:
       - -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.CommitDate}}
     gcflags:
       - all=-l -B
+
+upx:
+  - enabled: true
+    compress: best
+    lzma: true
 archives:
   - format: binary
     files:
@@ -58,6 +63,7 @@ archives:
       {{- .Os }}-
       {{- .Arch }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
+
 changelog:
   sort: asc
   filters:
